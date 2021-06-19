@@ -1,3 +1,4 @@
+const fs = require('fs')
 const db = require('../models')
 const Restaurant = db.Restaurant
 
@@ -21,15 +22,35 @@ const adminController = {
         req.flash('error_messages', "name didn't exist")
         return res.redirect('back')
       }
-      await Restaurant.create({
-        name: req.body.name,
-        tel: req.body.tel,
-        address: req.body.address,
-        opening_hours: req.body.opening_hours,
-        description: req.body.description
-      })
-      req.flash('success_messages', 'restaurant was successfully created')
-      res.redirect('/admin/restaurants')
+      const { file } = req
+      if (file) {
+        fs.readFile(file.path, (err, data) => {
+          if (err) console.log('Error', err)
+          fs.writeFile(`upload/${file.originalname}`, data, async () => {
+            await Restaurant.create({
+              name: req.body.name,
+              tel: req.body.tel,
+              address: req.body.address,
+              opening_hours: req.body.opening_hours,
+              description: req.body.description,
+              image: file ? `/upload/${file.originalname}` : null
+            })
+            req.flash('success_messages', 'restaurant was successfully created')
+            res.redirect('/admin/restaurants')
+          })
+        })
+      } else {
+        await Restaurant.create({
+          name: req.body.name,
+          tel: req.body.tel,
+          address: req.body.address,
+          opening_hours: req.body.opening_hours,
+          description: req.body.description,
+          image: null
+        })
+        req.flash('success_messages', 'restaurant was successfully created')
+        res.redirect('/admin/restaurants')
+      }
     } catch (err) {
       return console.warn(err)
     }
@@ -59,17 +80,37 @@ const adminController = {
         req.flash('error_messages', "name didn't exist")
         return res.redirect('back')
       }
-
-      const restaurant = await Restaurant.findByPk(req.params.id)
-      await restaurant.update({
-        name: req.body.name,
-        tel: req.body.tel,
-        address: req.body.address,
-        opening_hours: req.body.opening_hours,
-        description: req.body.description
-      })
-      req.flash('success_messages', 'restaurant was successfully to update')
-      res.redirect('/admin/restaurants')
+      const { file } = req
+      if (file) {
+        fs.readFile(file.path, (err, data) => {
+          if (err) console.log('Error: ', err)
+          fs.writeFile(`upload/${file.originalname}`, data, async () => {
+            const restaurant = await Restaurant.findByPk(req.params.id)
+            await restaurant.update({
+              name: req.body.name,
+              tel: req.body.tel,
+              address: req.body.address,
+              opening_hours: req.body.opening_hours,
+              description: req.body.description,
+              image: file ? `/upload/${file.originalname}` : restaurant.image
+            })
+            req.flash('success_messages', 'restaurant was successfully to update')
+            res.redirect('/admin/restaurants')
+          })
+        })
+      } else {
+        const restaurant = await Restaurant.findByPk(req.params.id)
+        await restaurant.update({
+          name: req.body.name,
+          tel: req.body.tel,
+          address: req.body.address,
+          opening_hours: req.body.opening_hours,
+          description: req.body.description,
+          image: restaurant.image
+        })
+        req.flash('success_messages', 'restaurant was successfully to update')
+        res.redirect('/admin/restaurants')
+      }
     } catch (err) {
       return console.warn(err)
     }
