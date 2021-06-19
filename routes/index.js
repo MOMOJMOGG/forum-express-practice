@@ -22,7 +22,6 @@ module.exports = (app, passport) => {
     }
     res.redirect('/signin')
   }
-
   app.get('/', authenticated, (req, res) => res.redirect('/restaurants'))
   app.get('/restaurants', authenticated, restController.getRestaurants)
 
