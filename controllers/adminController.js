@@ -4,6 +4,7 @@ const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const db = require('../models')
 const Restaurant = db.Restaurant
 const User = db.User
+const helpers = require('../_helpers')                     // add for test
 
 const adminController = {
   getRestaurants: async (req, res) => {
@@ -138,7 +139,8 @@ const adminController = {
   toggleAdmin: async (req, res) => {
     try {
       const user = await User.findByPk(req.params.id)
-      await user.update({ isAdmin: !user.toJSON().isAdmin, updated_by: req.user.id })
+      // await user.update({ isAdmin: !user.toJSON().isAdmin, updated_by: req.user.id })
+      await user.update({ isAdmin: !user.toJSON().isAdmin, updated_by: helpers.getUser(req).id })  // add for test
       req.flash('success_messages', 'user role was successfully to update')
       res.redirect('/admin/users')
     } catch (err) {
