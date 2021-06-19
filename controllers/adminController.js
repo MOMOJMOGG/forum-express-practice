@@ -3,6 +3,7 @@ const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const db = require('../models')
 const Restaurant = db.Restaurant
+const User = db.User
 
 const adminController = {
   getRestaurants: async (req, res) => {
@@ -123,7 +124,16 @@ const adminController = {
     } catch (err) {
       return console.warn(err)
     }
-  }
+  },
+
+  getUsers: async (req, res) => {
+    try {
+      const users = await User.findAll({ raw: true })
+      return res.render('admin/users', { users: users })
+    } catch (err) {
+      return console.warn(err)
+    }
+  },
 }
 
 module.exports = adminController
