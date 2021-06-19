@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      User.hasMany(User, { foreignKey: 'updated_by' })
     }
   };
   User.init({

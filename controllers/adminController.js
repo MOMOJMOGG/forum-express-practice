@@ -134,6 +134,17 @@ const adminController = {
       return console.warn(err)
     }
   },
+
+  toggleAdmin: async (req, res) => {
+    try {
+      const user = await User.findByPk(req.params.id)
+      await user.update({ isAdmin: !user.toJSON().isAdmin, updated_by: req.user.id })
+      req.flash('success_messages', 'user role was successfully to update')
+      res.redirect('/admin/users')
+    } catch (err) {
+      return console.warn(err)
+    }
+  }
 }
 
 module.exports = adminController
