@@ -34,6 +34,15 @@ const adminController = {
       return console.warn(err)
     }
   },
+
+  getRestaurant: async (req, res) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
+      return res.render('admin/restaurant', { restaurant: restaurant })
+    } catch (err) {
+      return console.warn(err)
+    }
+  },
 }
 
 module.exports = adminController
