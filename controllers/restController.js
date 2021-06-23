@@ -5,13 +5,23 @@ const Category = db.Category
 const restController = {
   getRestaurants: async (req, res) => {
     try {
-      const restaurants = await Restaurant.findAll({ include: Category })
+      const whereQuery = {}
+      let categoryId = ''
+      if (req.query.categoryId) {
+        categoryId = Number(req.query.categoryId)
+        whereQuery.CategoryId = categoryId
+      }
+
+      const restaurants = await Restaurant.findAll({ include: Category, where: whereQuery })
       const data = restaurants.map(r => ({
         ...r.dataValues,
         description: r.dataValues.description.substring(0, 50), // 當 key 重覆時，會以後面出現的為準
-        categoryName: r.Category.name
+        categoryName: r.Category.name,
+        categoryId: categoryId
       }))
-      return res.render('restaurants', { restaurants: data })
+      const categories = await Category.findAll({ raw: true, nest: true })
+
+      return res.render('restaurants', { restaurants: data, categories: categories })
     } catch (err) {
       return console.warn(err)
     }
