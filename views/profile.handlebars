@@ -1,0 +1,14 @@
+<div class="row">
+  <div class="col-12 d-flex flex-row bg-white">
+    <div class="left-part">
+      <img src="{{user.image}}" class="border border-dark rounded-circle mr-5" style="width: 18rem; height: 18rem;">
+    </div>
+    <div class="right-part pt-3 pb-3">
+      <h4>{{user.name}}</h4>
+      <p>{{user.email}}</p>
+      <a href='/users/{{user.id}}/edit'>
+        <button type="button" class="btn btn-primary">edit</button>
+      </a>
+    </div>
+  </div>
+</div>
