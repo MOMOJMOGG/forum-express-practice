@@ -48,6 +48,8 @@ const restController = {
   getRestaurant: async (req, res) => {
     try {
       const restaurant = await Restaurant.findByPk(req.params.id, { include: [Category, { model: Comment, include: [User] }] })
+      await restaurant.increment('viewCounts')
+      console.log(restaurant.toJSON())
       return res.render('restaurant', { restaurant: restaurant.toJSON() })
     } catch (err) {
       return console.warn(err)
