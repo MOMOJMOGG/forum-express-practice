@@ -32,7 +32,8 @@ const restController = {
         ...r.dataValues,
         description: r.dataValues.description.substring(0, 50), // 當 key 重覆時，會以後面出現的為準
         categoryName: r.Category.name,
-        categoryId: categoryId
+        categoryId: categoryId,
+        isFavorited: req.user.FavoritedRestaurants.map(d => d.id).includes(r.id)
       }))
       const categories = await Category.findAll({ raw: true, nest: true })
 
@@ -47,10 +48,11 @@ const restController = {
 
   getRestaurant: async (req, res) => {
     try {
-      const restaurant = await Restaurant.findByPk(req.params.id, { include: [Category, { model: Comment, include: [User] }] })
+      const restaurant = await Restaurant.findByPk(req.params.id, { include: [Category, { model: User, as: 'FavoritedUsers' }, { model: Comment, include: [User] }] })
       await restaurant.increment('viewCounts')
-      console.log(restaurant.toJSON())
-      return res.render('restaurant', { restaurant: restaurant.toJSON() })
+      const isFavorited = restaurant.FavoritedUsers.map(d => d.id).includes(req.user.id)
+
+      return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited: isFavorited })
     } catch (err) {
       return console.warn(err)
     }
