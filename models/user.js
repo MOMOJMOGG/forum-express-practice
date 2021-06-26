@@ -13,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       User.hasMany(User, { foreignKey: 'updated_by' })
       User.hasMany(models.Comment)
+      User.belongsToMany(models.Restaurant, {
+        through: models.Favorite,
+        foreignKey: 'UserId',
+        as: 'FavoritedRestaurants'
+      })
     }
   };
   User.init({

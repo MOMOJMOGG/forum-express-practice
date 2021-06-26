@@ -6,6 +6,7 @@ const db = require('../models')
 const User = db.User
 const Comment = db.Comment
 const Restaurant = db.Restaurant
+const Favorite = db.Favorite
 
 const userController = {
   signUpPage: (req, res) => {
@@ -104,6 +105,33 @@ const userController = {
         req.flash('success_messages', 'restaurant was successfully to update')
         res.redirect(`/users/${req.params.id}`)
       }
+    } catch (err) {
+      return console.warn(err)
+    }
+  },
+
+  addFavorite: async (req, res) => {
+    try {
+      await Favorite.create({
+        UserId: req.user.id,
+        RestaurantId: req.params.restaurantId
+      })
+      return res.redirect('back')
+    } catch (err) {
+      return console.warn(err)
+    }
+  },
+
+  removeFavorite: async (req, res) => {
+    try {
+      const favorite = await Favorite.findOne({
+        where: {
+          UserId: req.user.id,
+          RestaurantId: req.params.restaurantId
+        }
+      })
+      await favorite.destroy()
+      return res.redirect('back')
     } catch (err) {
       return console.warn(err)
     }
