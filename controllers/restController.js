@@ -96,7 +96,29 @@ const restController = {
     } catch (err) {
       return console.warn(err)
     }
-  }
+  },
+
+  getTopRestaurant: async (req, res) => {
+    try {
+      let restaurants = await Restaurant.findAll({
+        order: [['createdAt', 'DESC']],
+        include: [Category, { model: User, as: 'FavoritedUsers' }, { model: User, as: 'LikedUsers' }]
+      })
+      restaurants = restaurants.map(restaurant => ({
+        ...restaurant.dataValues,
+        // 計算追蹤者人數
+        FavoritedUsers: restaurant.FavoritedUsers.length,
+        isFavorited: restaurant.FavoritedUsers.map(d => d.id).includes(req.user.id),
+        isLiked: restaurant.LikedUsers.map(d => d.id).includes(req.user.id)
+      }))
+      // 依追蹤者人數排序清單
+      restaurants = restaurants.sort((a, b) => b.FavoritedUsers - a.FavoritedUsers)
+      restaurants = restaurants.slice(0, 10)
+      return res.render('topRestaurants', { restaurants: restaurants })
+    } catch (err) {
+      return console.warn(err)
+    }
+  },
 }
 
 module.exports = restController
