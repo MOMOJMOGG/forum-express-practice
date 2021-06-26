@@ -1,6 +1,10 @@
+const fs = require('fs')
+const imgur = require('imgur-node-api')
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const User = db.User
+const helpers = require('../_helpers')                     // add for test
 
 const userController = {
   signUpPage: (req, res) => {
@@ -48,8 +52,57 @@ const userController = {
     res.redirect('/signin')
   },
 
-  getUser: (req, res) => {
-    return res.render('profile', { user: req.user })
+  getUser: async (req, res) => {
+    try {
+      const user = await User.findByPk(req.params.id)
+      return res.render('profile', { profileUser: user.toJSON() })
+    } catch (err) {
+      return console.warn(err)
+    }
+
+  },
+
+  editUser: (req, res) => {
+    // if (Number(req.params.id) !== req.user.id) {
+    if (Number(req.params.id === helpers.getUser(req).id)) {            // add for test
+      req.flash('error_messages', '只能修改自己的 Profile！')
+      return res.redirect(`/users/${req.params.id}`)
+    } else {
+      // return res.render('edit', { profileUser: req.user })
+      return res.render('edit', { profileUser: helpers.getUser(req) })  // add for test
+    }
+  },
+
+  putUser: async (req, res) => {
+    try {
+      if (!req.body.name) {
+        req.flash('error_messages', "name didn't exist")
+        return res.redirect('back')
+      }
+      const { file } = req
+      if (file) {
+        imgur.setClientID(IMGUR_CLIENT_ID);
+        imgur.upload(file.path, async (err, img) => {
+          const user = await User.findByPk(req.params.id)
+          await user.update({
+            name: req.body.name,
+            image: file ? img.data.link : user.toJSON().image
+          })
+          req.flash('success_messages', 'restaurant was successfully to update')
+          res.redirect(`/users/${req.params.id}`)
+        })
+      } else {
+        const user = await User.findByPk(req.params.id)
+        await user.update({
+          name: req.body.name,
+          image: user.toJSON().image
+        })
+        req.flash('success_messages', 'restaurant was successfully to update')
+        res.redirect(`/users/${req.params.id}`)
+      }
+    } catch (err) {
+      return console.warn(err)
+    }
   }
 }
 

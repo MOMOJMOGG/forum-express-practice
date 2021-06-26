@@ -9,17 +9,17 @@ const helpers = require('../_helpers')                     // add for test
 
 module.exports = (app, passport) => {
   const authenticated = (req, res, next) => {
-    if (req.isAuthenticated()) {
-      // if (helpers.ensureAuthenticated(req)) {                // add for test
+    // if (req.isAuthenticated()) {
+    if (helpers.ensureAuthenticated(req)) {                // add for test
       return next()
     }
     res.redirect('/signin')
   }
   const authenticatedAdmin = (req, res, next) => {
-    if (req.isAuthenticated()) {
-      if (req.user.isAdmin) { return next() }
-      // if (helpers.ensureAuthenticated(req)) {                // add for test
-      //   if (helpers.getUser(req).isAdmin) { return next() }  // add for test
+    // if (req.isAuthenticated()) {
+    //   if (req.user.isAdmin) { return next() }
+    if (helpers.ensureAuthenticated(req)) {                // add for test
+      if (helpers.getUser(req).isAdmin) { return next() }  // add for test
       return res.redirect('/')
     }
     res.redirect('/signin')
@@ -58,4 +58,6 @@ module.exports = (app, passport) => {
   app.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 
   app.get('/users/:id', authenticated, userController.getUser)
+  app.get('/users/:id/edit', authenticated, userController.editUser)
+  app.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 }
