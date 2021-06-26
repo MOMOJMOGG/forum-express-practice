@@ -76,6 +76,20 @@ const restController = {
         comments: comments
       })
     })
+  },
+
+  getDashboard: async (req, res) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id, {
+        include: [
+          Category,
+          { model: Comment, include: [User] }
+        ]
+      })
+      return res.render('dashboard', { restaurant: restaurant.toJSON() })
+    } catch (err) {
+      return console.warn(err)
+    }
   }
 }
 
