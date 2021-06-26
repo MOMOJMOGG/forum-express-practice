@@ -7,6 +7,7 @@ const User = db.User
 const Comment = db.Comment
 const Restaurant = db.Restaurant
 const Favorite = db.Favorite
+const Like = db.Like
 
 const userController = {
   signUpPage: (req, res) => {
@@ -135,7 +136,34 @@ const userController = {
     } catch (err) {
       return console.warn(err)
     }
-  }
+  },
+
+  addLike: async (req, res) => {
+    try {
+      await Like.create({
+        UserId: req.user.id,
+        RestaurantId: req.params.restaurantId
+      })
+      return res.redirect('back')
+    } catch (err) {
+      return console.warn(err)
+    }
+  },
+
+  removeLike: async (req, res) => {
+    try {
+      const like = await Like.findOne({
+        where: {
+          UserId: req.user.id,
+          RestaurantId: req.params.restaurantId
+        }
+      })
+      await like.destroy()
+      return res.redirect('back')
+    } catch (err) {
+      return console.warn(err)
+    }
+  },
 }
 
 module.exports = userController
