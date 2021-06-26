@@ -10,6 +10,7 @@ if (process.env.NODE_ENV !== 'production') {
 const session = require('express-session')
 const passport = require('./config/passport')
 const db = require('./models')
+const helpers = require('./_helpers')
 const app = express()
 const port = process.env.PORT || 3000
 
@@ -26,6 +27,12 @@ app.use(passport.session())
 app.use(flash())
 app.use(methodOverride('_method'))
 app.use('/upload', express.static(__dirname + '/upload'))
+
+// for mocha check
+app.use((req, res, next) => {
+  req.user = helpers.getUser(req)
+  next()
+})
 
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')

@@ -4,7 +4,8 @@ const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const User = db.User
-const helpers = require('../_helpers')                     // add for test
+const Comment = db.Comment
+const Restaurant = db.Restaurant
 
 const userController = {
   signUpPage: (req, res) => {
@@ -54,8 +55,13 @@ const userController = {
 
   getUser: async (req, res) => {
     try {
-      const user = await User.findByPk(req.params.id)
-      return res.render('profile', { profileUser: user.toJSON() })
+      const user = await User.findByPk(req.params.id, { include: [{ model: Comment, include: [Restaurant] }] })
+      let isSelf = false
+
+      if (Number(req.params.id) === req.user.id) {
+        isSelf = true
+      }
+      return res.render('profile', { profileUser: user.toJSON(), isSelf })
     } catch (err) {
       return console.warn(err)
     }
@@ -63,13 +69,11 @@ const userController = {
   },
 
   editUser: (req, res) => {
-    // if (Number(req.params.id) !== req.user.id) {
-    if (Number(req.params.id === helpers.getUser(req).id)) {            // add for test
+    if (Number(req.params.id) !== req.user.id) {
       req.flash('error_messages', '只能修改自己的 Profile！')
       return res.redirect(`/users/${req.params.id}`)
     } else {
-      // return res.render('edit', { profileUser: req.user })
-      return res.render('edit', { profileUser: helpers.getUser(req) })  // add for test
+      return res.render('edit', { profileUser: req.user })
     }
   },
 
