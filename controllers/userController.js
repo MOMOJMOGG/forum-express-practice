@@ -2,6 +2,7 @@ const fs = require('fs')
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const bcrypt = require('bcryptjs')
+const removeDuplicates = require('../config/removeDuplicates')
 const db = require('../models')
 const User = db.User
 const Comment = db.Comment
@@ -58,13 +59,20 @@ const userController = {
 
   getUser: async (req, res) => {
     try {
-      const user = await User.findByPk(req.params.id, { include: [{ model: Comment, include: [Restaurant] }] })
+      const user = await User.findByPk(req.params.id, {
+        include: [{ model: Comment, include: [Restaurant] },
+        { model: Restaurant, as: 'FavoritedRestaurants' },
+        { model: User, as: 'Followers' },
+        { model: User, as: 'Followings' }]
+      })
       let isSelf = false
-
       if (Number(req.params.id) === req.user.id) {
         isSelf = true
       }
-      return res.render('profile', { profileUser: user.toJSON(), isSelf })
+      let profileUser = user.toJSON()
+      profileUser.Comments = removeDuplicates(profileUser.Comments)
+      // console.log(test)
+      return res.render('profile', { profileUser: profileUser, isSelf })
     } catch (err) {
       return console.warn(err)
     }
