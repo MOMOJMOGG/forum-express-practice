@@ -7,10 +7,10 @@
     <div class="right-part pt-3 pb-3">
       <h4>{{profileUser.name}}</h4>
       <p>{{profileUser.email}}</p>
-      <p><strong>{{profileUser.Comments.length}} 已評論餐廳</strong></p>
-      <p><strong>{{profileUser.FavoritedRestaurants.length}} 收藏的餐廳</strong></p>
-      <p><strong>{{profileUser.Followings.length}} followings (追蹤者)</strong></p>
-      <p><strong>{{profileUser.Followers.length}} followers (追隨者)</strong></p>
+      <p><strong>{{profileUser.Comments.length}}</strong> 已評論餐廳</p>
+      <p><strong>{{profileUser.FavoritedRestaurants.length}}</strong> 收藏的餐廳</p>
+      <p><strong>{{profileUser.Followings.length}}</strong> followings</p>
+      <p><strong>{{profileUser.Followers.length}}</strong> followers</p>
       {{#if isSelf}}
       <a href='/users/{{profileUser.id}}/edit'>
         <button type="button" class="btn btn-primary">edit</button>
