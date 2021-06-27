@@ -8,7 +8,7 @@ module.exports = {
         text: faker.lorem.sentence(),
         UserId: Math.floor(Math.random() * 3) * 10 + 1,
         // UserId: 1,
-        RestaurantId: Math.floor(Math.random() * 50) + 1,
+        RestaurantId: Math.floor(Math.random() * 50) * 10 + 1,
         createdAt: new Date(),
         updatedAt: new Date()
       })
