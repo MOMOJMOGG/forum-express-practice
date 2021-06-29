@@ -1,9 +1,9 @@
-function removeDuplicates(obj_arr) {
+function removeDuplicatesById(objArr) {
   const newArray = [];
   const lookupObject = {};
 
-  for (let i in obj_arr) {
-    lookupObject[obj_arr[i].Restaurant.id] = obj_arr[i];
+  for (let i in objArr) {
+    lookupObject[objArr[i][1]] = objArr[i][0];
   }
 
   for (i in lookupObject) {
@@ -13,4 +13,4 @@ function removeDuplicates(obj_arr) {
   return newArray;
 }
 
-module.exports = removeDuplicates
+module.exports = removeDuplicatesById

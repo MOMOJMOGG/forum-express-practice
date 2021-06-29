@@ -2,7 +2,7 @@ const fs = require('fs')
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const bcrypt = require('bcryptjs')
-const removeDuplicates = require('../config/removeDuplicates')
+const removeDuplicatesById = require('../config/removeDuplicates')
 const db = require('../models')
 const User = db.User
 const Comment = db.Comment
@@ -70,8 +70,8 @@ const userController = {
         isSelf = true
       }
       let profileUser = user.toJSON()
-      profileUser.Comments = removeDuplicates(profileUser.Comments)
-      // console.log(test)
+      profileUser.Comments = removeDuplicatesById(profileUser.Comments.map(c => [c, c.Restaurant.id]))
+
       return res.render('profile', { profileUser: profileUser, isSelf })
     } catch (err) {
       return console.warn(err)

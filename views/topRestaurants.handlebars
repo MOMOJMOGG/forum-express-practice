@@ -19,10 +19,14 @@
   {{#each restaurants}}
   <div class="col-12 d-flex flex-row bg-white mb-5">
     <div class="left-part mr-5">
-      <img src="{{this.image}}" alt="restaurant image" style="width: 18rem; height: 18rem;">
+      <a href="/restaurants/{{this.id}}" class="undecoration">
+        <img src="{{this.image}}" alt="restaurant image" style="width: 18rem; height: 18rem;">
+      </a>
     </div>
     <div class="right-part pt-3 pb-3 w-100" style="text-align: center;">
-      <h4>{{this.name}}</h4>
+      <a href="/restaurants/{{this.id}}" class="undecoration">
+        <h4>{{this.name}}</h4>
+      </a>
       <span class="badge badge-secondary"><strong>收藏數 : {{this.FavoritedUsers}}</strong></span>
       <p>{{this.description}}</p>
       {{#if this.isFavorited }}
