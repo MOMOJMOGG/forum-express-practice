@@ -7,19 +7,26 @@ const Restaurant = db.Restaurant
 const User = db.User
 const helpers = require('../_helpers')                     // add for test
 
+const adminService = require('../services/adminService')
+
 const adminController = {
-  getRestaurants: async (req, res) => {
-    try {
-      const restaurants = await Restaurant.findAll({
-        raw: true,
-        nest: true,
-        include: [Category]
-      })
-      return res.render('admin/restaurants', { restaurants: restaurants })
-    } catch (err) {
-      return console.warn(err)
-    }
+  getRestaurants: (req, res) => {
+    adminService.getRestaurants(req, res, (data) => {
+      return res.render('admin/restaurants', data)
+    })
   },
+  // getRestaurants: async (req, res) => {
+  //   try {
+  //     const restaurants = await Restaurant.findAll({
+  //       raw: true,
+  //       nest: true,
+  //       include: [Category]
+  //     })
+  //     return res.render('admin/restaurants', { restaurants: restaurants })
+  //   } catch (err) {
+  //     return console.warn(err)
+  //   }
+  // },
 
   createRestaurant: async (req, res) => {
     try {
