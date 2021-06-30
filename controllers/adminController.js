@@ -15,18 +15,6 @@ const adminController = {
       return res.render('admin/restaurants', data)
     })
   },
-  // getRestaurants: async (req, res) => {
-  //   try {
-  //     const restaurants = await Restaurant.findAll({
-  //       raw: true,
-  //       nest: true,
-  //       include: [Category]
-  //     })
-  //     return res.render('admin/restaurants', { restaurants: restaurants })
-  //   } catch (err) {
-  //     return console.warn(err)
-  //   }
-  // },
 
   createRestaurant: async (req, res) => {
     try {
@@ -77,13 +65,10 @@ const adminController = {
     }
   },
 
-  getRestaurant: async (req, res) => {
-    try {
-      const restaurant = await Restaurant.findByPk(req.params.id, { include: [Category] })
-      return res.render('admin/restaurant', { restaurant: restaurant.toJSON() })
-    } catch (err) {
-      return console.warn(err)
-    }
+  getRestaurant: (req, res) => {
+    adminService.getRestaurant(req, res, (data) => {
+      return res.render('admin/restaurant', data)
+    })
   },
 
   editRestaurant: async (req, res) => {

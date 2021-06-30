@@ -14,6 +14,15 @@ const adminService = {
     } catch (err) {
       return callback({ error_messages: "getRestaurants Failed!" })
     }
-  }
+  },
+
+  getRestaurant: async (req, res, callback) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id, { include: [Category] })
+      return callback({ restaurant: restaurant.toJSON() })
+    } catch (err) {
+      return callback({ error_messages: "getRestaurant Failed!" })
+    }
+  },
 }
 module.exports = adminService
