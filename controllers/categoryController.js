@@ -1,20 +1,27 @@
 const db = require('../models')
 const Category = db.Category
 
+const categoryService = require('../services/categoryService')
+
 let categoryController = {
-  getCategories: async (req, res) => {
-    try {
-      const categories = await Category.findAll({ raw: true, nest: true })
-      if (req.params.id) {
-        const category = await Category.findByPk(req.params.id)
-        return res.render('admin/categories', { categories: categories, category: category.toJSON() })
-      } else {
-        return res.render('admin/categories', { categories: categories })
-      }
-    } catch (err) {
-      return console.warn(err)
-    }
+  getCategories: (req, res) => {
+    categoryService.getCategories(req, res, (data) => {
+      return res.render('admin/categories', data)
+    })
   },
+  // getCategories: async (req, res) => {
+  //   try {
+  //     const categories = await Category.findAll({ raw: true, nest: true })
+  //     if (req.params.id) {
+  //       const category = await Category.findByPk(req.params.id)
+  //       return res.render('admin/categories', { categories: categories, category: category.toJSON() })
+  //     } else {
+  //       return res.render('admin/categories', { categories: categories })
+  //     }
+  //   } catch (err) {
+  //     return console.warn(err)
+  //   }
+  // },
 
   postCategory: async (req, res) => {
     try {
