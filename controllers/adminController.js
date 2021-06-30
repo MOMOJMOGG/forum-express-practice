@@ -52,46 +52,15 @@ const adminController = {
     }
   },
 
-  putRestaurant: async (req, res) => {
-    try {
-      if (!req.body.name) {
-        req.flash('error_messages', "name didn't exist")
+  putRestaurant: (req, res) => {
+    adminService.putRestaurant(req, res, (data) => {
+      if (data['status'] === 'error') {
+        req.flash('error_messages', data['message'])
         return res.redirect('back')
       }
-      const { file } = req
-      if (file) {
-        imgur.setClientID(IMGUR_CLIENT_ID);
-        imgur.upload(file.path, async (err, img) => {
-          const restaurant = await Restaurant.findByPk(req.params.id)
-          await restaurant.update({
-            name: req.body.name,
-            tel: req.body.tel,
-            address: req.body.address,
-            opening_hours: req.body.opening_hours,
-            description: req.body.description,
-            image: file ? img.data.link : restaurant.image,
-            CategoryId: req.body.categoryId
-          })
-          req.flash('success_messages', 'restaurant was successfully to update')
-          res.redirect('/admin/restaurants')
-        })
-      } else {
-        const restaurant = await Restaurant.findByPk(req.params.id)
-        await restaurant.update({
-          name: req.body.name,
-          tel: req.body.tel,
-          address: req.body.address,
-          opening_hours: req.body.opening_hours,
-          description: req.body.description,
-          image: restaurant.image,
-          CategoryId: req.body.categoryId
-        })
-        req.flash('success_messages', 'restaurant was successfully to update')
-        res.redirect('/admin/restaurants')
-      }
-    } catch (err) {
-      return console.warn(err)
-    }
+      req.flash('success_messages', data['message'])
+      res.redirect('/admin/restaurants')
+    })
   },
 
   deleteRestaurant: (req, res) => {
