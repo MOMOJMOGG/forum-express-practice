@@ -24,5 +24,15 @@ const adminService = {
       return callback({ error_messages: "getRestaurant Failed!" })
     }
   },
+
+  deleteRestaurant: async (req, res, callback) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id)
+      await restaurant.destroy()
+      return callback({ status: 'success', message: 'restaurant was successfully to delete' })
+    } catch (err) {
+      return console.warn(err)
+    }
+  },
 }
 module.exports = adminService
