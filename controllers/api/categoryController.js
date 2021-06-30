@@ -9,6 +9,12 @@ const adminController = {
     categoryService.getCategories(req, res, (data) => {
       return res.json(data)
     })
-  }
+  },
+
+  deleteCategories: (req, res) => {
+    categoryService.deleteCategory(req, res, (data) => {
+      return res.json(data)
+    })
+  },
 }
 module.exports = adminController

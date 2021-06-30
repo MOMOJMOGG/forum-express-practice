@@ -16,5 +16,15 @@ const categoryService = {
       return callback({ error_messages: "getCategories Failed!" })
     }
   },
+
+  deleteCategory: async (req, res, callback) => {
+    try {
+      const category = await Category.findByPk(req.params.id)
+      await category.destroy()
+      return callback({ status: 'success', message: 'restaurant was successfully to delete' })
+    } catch (err) {
+      return callback({ status: 'error', message: 'Delete Restaurant Failed!' })
+    }
+  }
 }
 module.exports = categoryService

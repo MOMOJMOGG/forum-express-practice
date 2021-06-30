@@ -9,19 +9,6 @@ let categoryController = {
       return res.render('admin/categories', data)
     })
   },
-  // getCategories: async (req, res) => {
-  //   try {
-  //     const categories = await Category.findAll({ raw: true, nest: true })
-  //     if (req.params.id) {
-  //       const category = await Category.findByPk(req.params.id)
-  //       return res.render('admin/categories', { categories: categories, category: category.toJSON() })
-  //     } else {
-  //       return res.render('admin/categories', { categories: categories })
-  //     }
-  //   } catch (err) {
-  //     return console.warn(err)
-  //   }
-  // },
 
   postCategory: async (req, res) => {
     try {
@@ -52,13 +39,12 @@ let categoryController = {
     }
   },
 
-  deleteCategory: async (req, res) => {
-    try {
-      const category = await Category.findByPk(req.params.id)
-      await category.destroy()
+  deleteCategory: (req, res) => {
+    if (data['status'] === 'success') {
+      req.flash('success_messages', data['message'])
       return res.redirect('/admin/categories')
-    } catch (err) {
-      return console.warn(err)
+    } else {
+      req.flash('error_messages', data['message'])
     }
   }
 }
