@@ -30,6 +30,20 @@ const categoryService = {
     }
   },
 
+  putCategory: async (req, res, callback) => {
+    try {
+      if (!req.body.name) {
+        return callback({ status: 'error', message: 'name didn\'t exist' })
+      } else {
+        const category = await Category.findByPk(req.params.id)
+        await category.update(req.body)
+        return callback({ status: 'success', message: 'Category was successfully updated' })
+      }
+    } catch (err) {
+      return callback({ error_messages: "Put Category Failed!" })
+    }
+  },
+
   deleteCategory: async (req, res, callback) => {
     try {
       const category = await Category.findByPk(req.params.id)

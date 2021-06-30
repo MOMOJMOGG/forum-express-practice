@@ -21,19 +21,15 @@ let categoryController = {
     })
   },
 
-  putCategory: async (req, res) => {
-    try {
-      if (!req.body.name) {
-        req.flash('error_messages', 'name didn\'t exist')
+  putCategory: (req, res) => {
+    categoryService.putCategory(req, res, (data) => {
+      if (data['status'] === 'error') {
+        req.flash('error_messages', data['message'])
         return res.redirect('back')
-      } else {
-        const category = await Category.findByPk(req.params.id)
-        await category.update(req.body)
-        return res.redirect('/admin/categories')
       }
-    } catch (err) {
-      return console.warn(err)
-    }
+      req.flash('success_messages', data['message'])
+      res.redirect('/admin/categories')
+    })
   },
 
   deleteCategory: (req, res) => {
