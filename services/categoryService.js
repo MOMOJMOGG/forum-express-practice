@@ -17,6 +17,19 @@ const categoryService = {
     }
   },
 
+  postCategory: async (req, res, callback) => {
+    try {
+      if (!req.body.name) {
+        return callback({ status: 'error', message: 'name didn\'t exist' })
+      } else {
+        await Category.create({ name: req.body.name })
+        return callback({ status: 'success', message: 'Category was successfully create' })
+      }
+    } catch (err) {
+      return callback({ error_messages: "Post Category Failed!" })
+    }
+  },
+
   deleteCategory: async (req, res, callback) => {
     try {
       const category = await Category.findByPk(req.params.id)
